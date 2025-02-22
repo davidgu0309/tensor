@@ -137,7 +137,7 @@ namespace tensor {
     }
 
     template <typename T>
-    Tensor<T> initialize_using_generator(const Shape shape, std::function<T(MultiIndex)> generator) {
+    Tensor<T> initializeWithGenerator(const Shape shape, std::function<T(MultiIndex)> generator) {
         std::vector<T> data(numEntries(shape));
         std::vector<MultiIndex> indexes = indexesRowMajor(shape);
         for (int i=0; i<data.size(); i++) {
@@ -147,15 +147,42 @@ namespace tensor {
     }
 
     template <typename T>
-    Tensor<T> real_uniform(const Shape shape, const T lower, const T upper) {
+    Tensor<T> realUniform(const Shape shape, const T lower, const T upper) {
         std::random_device rd;
         std::mt19937 gen(rd());
-        return initialize_using_generator<T>(shape, [lower, upper, gen](MultiIndex i) mutable {
+        return initializeWithGenerator<T>(shape, [lower, upper, gen](MultiIndex i) mutable {
             std::uniform_real_distribution<T> dist(lower, upper);
             return dist(gen);
         });
     }
 
+    template <typename T>
+    T kroneckerDelta(const MultiIndex i){
+        if(i.size() > 1){
+            for(size_t j = 1; j < i.size(); ++j){
+                if(i[j - 1] != i[j]) return (T)0;
+            }
+        }
+        return (T)1;
+    }
+
+    template <typename T>
+    Tensor<T> idLeft(const Shape shape) {
+        if(!shape.size()) return Tensor<T>(1);
+        Shape id_shape = {shape.front(), shape.front()};
+        // Inefficient, but good to test initializeWithGenerator
+        // TODO: rewrite
+        return initializeWithGenerator<T>(id_shape, kroneckerDelta<T>);
+    }
+
+    template <typename T>
+    Tensor<T> idRight(const Shape shape) {
+        if(!shape.size()) return Tensor<T>(1);
+        Shape id_shape = {shape.back(), shape.back()};
+        // Inefficient, but good to test initializeWithGenerator
+        // TODO: rewrite
+        return initializeWithGenerator<T>(id_shape, kroneckerDelta<T>);
+    }
 
 
     /**

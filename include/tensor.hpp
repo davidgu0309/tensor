@@ -109,6 +109,10 @@ namespace tensor {
 
     };
 
+    // TODO: maybe move somewhere
+    template <typename T>
+    T kroneckerDelta(const MultiIndex i);
+
     // Common tensors
     template <typename T>
     Tensor<T> zeros(const Shape shape);
@@ -120,16 +124,19 @@ namespace tensor {
     Tensor<T> constant(const Shape shape, T value);
 
     template <typename T>
+    Tensor<T> idLeft(const Shape shape) ;
+
+    template <typename T>
     Tensor<T> iota(const Shape shape);
 
     // TO DO: identity
 
     // TO DO: random
     template <typename T>
-    Tensor<T> initialize_using_generator(const Shape shape, std::function<T()> generator);
+    Tensor<T> initializeWithGenerator(const Shape shape, std::function<T(MultiIndex)> generator);
 
     template <typename T>
-    Tensor<T> real_uniform(const Shape shape, const T lower, const T upper);
+    Tensor<T> realUniform(const Shape shape, const T lower, const T upper);
 
     std::vector<MultiIndex> indexesRowMajor(const Shape shape);
     MultiIndex concatIndexes(const MultiIndex& i, const MultiIndex& j);
