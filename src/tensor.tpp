@@ -137,10 +137,11 @@ namespace tensor {
     }
 
     template <typename T>
-    Tensor<T> initialize_using_generator(const Shape shape, std::function<T()> generator) {
+    Tensor<T> initialize_using_generator(const Shape shape, std::function<T(MultiIndex)> generator) {
         std::vector<T> data(numEntries(shape));
+        std::vector<MultiIndex> indexes = indexesRowMajor(shape);
         for (int i=0; i<data.size(); i++) {
-            data[i] = generator();
+            data[i] = generator(indexes[i]);
         }
         return Tensor(shape, data);
     }
@@ -149,7 +150,7 @@ namespace tensor {
     Tensor<T> real_uniform(const Shape shape, const T lower, const T upper) {
         std::random_device rd;
         std::mt19937 gen(rd());
-        return initialize_using_generator<T>(shape, [lower, upper, gen]() mutable {
+        return initialize_using_generator<T>(shape, [lower, upper, gen](MultiIndex i) mutable {
             std::uniform_real_distribution<T> dist(lower, upper);
             return dist(gen);
         });
