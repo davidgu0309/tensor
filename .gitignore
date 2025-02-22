@@ -31,3 +31,6 @@
 *.out
 *.app
 test_binary
+
+# IDE stuff
+.vscode
