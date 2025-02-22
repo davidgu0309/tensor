@@ -221,13 +221,17 @@ namespace tensor {
         return row_major;
     }
 
-    Shape combineIndexes(const MultiIndex& i, const MultiIndex& j){
-
+    MultiIndex concatIndexes(const MultiIndex& i, const MultiIndex& j){
         size_t dim_j = j.size();
-        
+        MultiIndex ij = i;
+        for(size_t d = 0; d < dim_j; ++d) ij.push_back(j[d]);
+        return ij;
+    }
+
+    MultiIndex combineIndexes(const MultiIndex& i, const MultiIndex& j){
+        size_t dim_j = j.size();
         MultiIndex ij = i;
         for(size_t d = 1; d < dim_j; ++d) ij.push_back(j[d]);
-
         return ij;
     }
 
