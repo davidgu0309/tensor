@@ -89,7 +89,7 @@ namespace tensor{
         Tensor<T> diff = zeros<T>(output_shape);
         std::vector<MultiIndex> input_indexes = indexesRowMajor(input_shape), output_indexes = indexesRowMajor(output_shape);
         for(const MultiIndex& i : input_indexes){
-            T& x_i = x.getEntrySafe(i);
+            const T& x_i = x.getEntrySafe(i);
             for(const MultiIndex& j : output_indexes){
                 MultiIndex ij = combineIndexes(i, j);
                 diff.getEntrySafe(j) += x_i * D.getEntrySafe(ij);
