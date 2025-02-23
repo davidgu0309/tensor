@@ -88,13 +88,21 @@ namespace tensor {
 
     template <typename T>
     T& Tensor<T>::getEntrySafe(MultiIndex index){
-        assert(multiIndexLegalityTest(shape_, index));
+        if(!multiIndexLegalityTest(shape_, index)){
+            std::cout << shape_ << std::endl;
+            std::cout << index << std::endl;
+            assert(0);
+        }
         return getEntryUnsafe(index);
     }
 
     template <typename T>
     const T& Tensor<T>::getEntrySafe(MultiIndex index) const{
-        assert(multiIndexLegalityTest(shape_, index));
+        if(!multiIndexLegalityTest(shape_, index)){
+            std::cout << shape_ << std::endl;
+            std::cout << index << std::endl;
+            assert(0);
+        }
         return getEntryUnsafe(index);
     }
 
