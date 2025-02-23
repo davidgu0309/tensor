@@ -37,7 +37,11 @@ namespace tensor{
     // Binary operations
     template<typename T, typename U, typename V, V (*binaryOp)(T, U)>
     Tensor<V> applyBinaryOp(const Tensor<T>& a, const Tensor<U>& b){
-        assert(a.shapeEqual(b));
+        if(!a.shapeEqual(b)){
+            std::cout << a.shape() << std::endl;
+            std::cout << b.shape() << std::endl;
+            assert(0);
+        }
         const std::vector<T>& data_a = a.data();  
         const std::vector<U>& data_b = b.data();  
         Tensor<V> result(a.shape());
@@ -61,7 +65,11 @@ namespace tensor{
 
     template <typename T>
     T dot(const Tensor<T>& a, const Tensor<T>& b) {
-        assert(a.shape_ == b.shape_);
+        if(a.shape_ != b.shape_){
+            std::cout << a.shape() << std::endl;
+            std::cout << b.shape() << std::endl;
+            assert(0);
+        }
         T sum = 0;
         std::vector<MultiIndex> indexes = indexesRowMajor(a.shape_);
         for(const MultiIndex& i : indexes){
@@ -96,7 +104,12 @@ namespace tensor{
         size_t dim_a = a_shape.size(), dim_b = b_shape.size();
         
         // Compatibility test
-        assert(dim_a && dim_b && a_shape.back() == b_shape.front());    // TO DO: return {} if one of the two is {}
+        // assert(dim_a && dim_b && a_shape.back() == b_shape.front());    // TO DO: return {} if one of the two is {}
+        if(!(dim_a && dim_b && a_shape.back() == b_shape.front())){
+            std::cout << a_shape << std::endl;
+            std::cout << b_shape << std::endl;
+            assert(0);
+        }
 
         // Compute result_shape
         Shape result_shape = a_shape;
