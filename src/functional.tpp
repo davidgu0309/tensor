@@ -65,13 +65,13 @@ namespace tensor{
 
     template <typename T>
     T dot(const Tensor<T>& a, const Tensor<T>& b) {
-        if(a.shape_ != b.shape_){
+        if(a.shape() != b.shape()){
             std::cout << a.shape() << std::endl;
             std::cout << b.shape() << std::endl;
             assert(0);
         }
         T sum = 0;
-        std::vector<MultiIndex> indexes = indexesRowMajor(a.shape_);
+        std::vector<MultiIndex> indexes = indexesRowMajor(a.shape());
         for(const MultiIndex& i : indexes){
             sum += a.get(i) * b.get(i);
         }
@@ -81,9 +81,9 @@ namespace tensor{
     // TODO: implement slicing and rewrite with dot
     template <typename T>
     Tensor<T> evaluateDifferential(const Tensor<T>& x, const Tensor<T>& D){
-        Shape input_shape = x.shape_;
+        Shape input_shape = x.shape();
         size_t input_dim = input_shape.size();
-        Shape D_shape = D.shape_;
+        Shape D_shape = D.shape();
         // TODO: test input_shape is a prefix of D_shape
         Shape output_shape(D_shape.begin() + input_dim, D_shape.end());
         Tensor<T> diff = zeros<T>(output_shape);
