@@ -13,12 +13,12 @@
 #include <cmath>
 
 /**
- * @namespace tensor
+ * @namespace scalar
  * 
  * @brief Namespace of the entire framework.
  * 
  */
-namespace tensor{
+namespace scalar{
 
     // Unary operations
     template <typename T>

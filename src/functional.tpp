@@ -16,22 +16,22 @@ namespace tensor{
 
     template <typename T>
     Tensor<T> neg(const Tensor<T>& a){
-        return applyUnaryOp<T, T, neg<T>>(a);
+        return applyUnaryOp<T, T, scalar::neg<T>>(a);
     }
 
     template <typename T>
     Tensor<T> inv(const Tensor<T>& a){
-        return applyUnaryOp<T, T, inv<T>>(a);
+        return applyUnaryOp<T, T, scalar::inv<T>>(a);
     }
 
     template <typename T>
     Tensor<T> relu(const Tensor<T>& a){
-        return applyUnaryOp<T, T, relu<T>>(a);
+        return applyUnaryOp<T, T, scalar::relu<T>>(a);
     }
 
     template <typename T>
     Tensor<T> sigmoid(const Tensor<T>& a){
-        return applyUnaryOp<T, T, sigmoid<T>>(a);
+        return applyUnaryOp<T, T, scalar::sigmoid<T>>(a);
     }
 
     // Binary operations
@@ -54,13 +54,13 @@ namespace tensor{
 
     template <typename T>
     Tensor<T> add(const Tensor<T>& a, const Tensor<T>& b) {
-        return applyBinaryOp<T, T, T, sum<T>>(a, b);
+        return applyBinaryOp<T, T, T, scalar::sum<T>>(a, b);
     }
     
 
     template <typename T>
     Tensor<T> mul(const Tensor<T>& a, const Tensor<T>& b) {
-        return applyBinaryOp<T, T, T, product<T>>(a, b);
+        return applyBinaryOp<T, T, T, scalar::product<T>>(a, b);
     }
 
     template <typename T>

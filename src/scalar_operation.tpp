@@ -1,4 +1,4 @@
-namespace tensor{
+namespace scalar{
 
     // Unary operations
     template <typename T>
