@@ -325,4 +325,19 @@ namespace tensor {
         return result;
     }
 
+    template <typename T>
+    std::vector<Tensor<T>> Tensor<T>::unstack(size_t d) const{
+        std::vector<Tensor<T>> result;
+        MultiRange multi_range;
+        for (size_t tensor_dim : shape_) {
+            multi_range.push_back({0, tensor_dim});
+        }
+        for (size_t i=0; i<shape_[d]; i++) {
+            multi_range[d] = {i, i+1};
+            result.push_back(slice(multi_range));
+        }
+        return result;
+    }
+
+
 }

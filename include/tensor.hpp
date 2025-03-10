@@ -114,6 +114,7 @@ namespace tensor {
         const T& getEntrySafe(MultiIndex index) const;
 
         Tensor<T> slice(MultiRange multi_range) const;
+        std::vector<Tensor<T>> unstack(size_t d) const;
 
         // Comparison operators
         bool operator == (const Tensor<T>& other) const;
