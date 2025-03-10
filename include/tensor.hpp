@@ -53,6 +53,19 @@ namespace tensor {
      */
     typedef std::vector<size_t> MultiIndex;
 
+    struct Range {
+        size_t from, to;
+    };
+
+    /**
+     * @typedef MultiIndex
+     * 
+     * @brief 0-based tensor indexes.
+     * 
+     */
+    typedef std::vector<Range> MultiRange;
+
+
     /**
      * @brief Checks if multi_index is valid for shape.
      */
@@ -99,6 +112,8 @@ namespace tensor {
 
         T& getEntrySafe(MultiIndex index);
         const T& getEntrySafe(MultiIndex index) const;
+
+        Tensor<T> slice(MultiRange multi_range) const;
 
         // Comparison operators
         bool operator == (const Tensor<T>& other) const;

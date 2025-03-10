@@ -271,4 +271,58 @@ namespace tensor {
         return ij;
     }
 
+    std::vector<MultiIndex> indexesSlice(const MultiRange multi_range){
+        std::queue<MultiIndex> indexes; // Multiindexes in "row-major" order
+        indexes.push({});
+        size_t n = multi_range.size();
+        //shape = {2, 2, 3}
+        //
+        // {}
+        // {0}, {1}
+        // {0, 0}, {0, 1}, {1, 0}, {1, 1}
+        // ...
+        for(size_t d = 0; d < n; ++d){
+            size_t m = indexes.size();
+            // Iterate over all multiindexes of the previous dimension
+            for(size_t i = 0; i < m; ++i){
+                // For each one, add all possible indexes for the current dimension
+                for(size_t j = multi_range[d].from; j < multi_range[d].to; ++j){
+                    MultiIndex index = indexes.front();
+                    index.push_back(j);
+                    indexes.push(index);
+                }
+                indexes.pop();
+            }
+        }
+        std::vector<MultiIndex> row_major(indexes.size());
+        size_t i = 0;
+        while(indexes.size()){
+            row_major[i] = indexes.front();
+            indexes.pop();
+            ++i;
+        }
+        return row_major;
+    }
+
+    Shape sliceShape(const MultiRange multi_range) {
+        Shape sliced_shape = {};
+        for (size_t d = 0; d<multi_range.size(); d++) {
+            sliced_shape.push_back(multi_range[d].to - multi_range[d].from);
+        }
+        return sliced_shape;
+    }
+
+    template <typename T>
+    Tensor<T> Tensor<T>::slice(MultiRange multi_range) const{
+        std::vector<MultiIndex> indexes = indexesSlice(multi_range);
+        Tensor<T> result(sliceShape(multi_range));
+
+        size_t counter = 0;
+        for(const MultiIndex& index : indexes){
+            result.data()[counter] = getEntryUnsafe(index);
+            counter++;
+        }
+        return result;
+    }
+
 }
