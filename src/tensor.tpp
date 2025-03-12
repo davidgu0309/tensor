@@ -36,7 +36,12 @@ namespace tensor {
     }
 
     template <typename T>
-    Shape Tensor<T>::shape() const {
+    const Shape& Tensor<T>::shape() const {
+        return shape_;
+    }
+
+    template <typename T>
+    Shape& Tensor<T>::shape() {
         return shape_;
     }
 
@@ -335,6 +340,70 @@ namespace tensor {
         for (size_t i=0; i<shape_[d]; i++) {
             multi_range[d] = {i, i+1};
             result.push_back(slice(multi_range));
+            result.back().shape().erase(result.back().shape().begin() + d);
+        }
+        return result;
+    }
+
+    // // Concept to detect C-style strings (both char arrays and const char*)
+    // template<typename T>
+    // concept is_c_string = 
+    //     (std::is_array_v<std::remove_reference_t<T>> && 
+    //     std::same_as<std::remove_extent_t<std::remove_reference_t<T>>, char>) || 
+    //     std::same_as<std::remove_cvref_t<T>, const char*>;
+
+    // // Generic << operator for iterable types other than strings
+    // template<typename T>
+    // requires (std::ranges::range<T> && !std::same_as<T, std::string> && !is_c_string<T>)
+    // std::ostream& operator<<(std::ostream& os, const T& container);
+
+    // // Print first operand and recurse on the rest
+    // template<typename T, typename... Args>
+    // void rec(std::ostream& os, size_t operand_idx, const T& first, const Args&... rest) {
+    //     os << "Operand " << operand_idx << ":\n" << first;
+    //     if constexpr (sizeof...(rest) > 0) {
+    //         os << std::endl;
+    //         rec(os, operand_idx + 1, rest...);
+    //     }
+    // }
+
+    // // Overload << operator for std::tuple
+    // template<typename... Args>
+    // std::ostream& operator<<(std::ostream& os, const std::tuple<Args...>& tup) {
+    //     std::apply([&os](const auto&... args) { rec(os, 0, args...); }, tup);
+    //     return os;
+    // }
+
+    // // Generic << operator for iterable types other than strings
+    // template<typename T>
+    // requires (std::ranges::range<T> && !std::same_as<T, std::string> && !is_c_string<T>)
+    // std::ostream& operator<<(std::ostream& os, const T& container) {
+    //     os << "[";
+    //     bool first = true;
+    //     for (const auto& item : container) {
+    //         if (!first) os << ", ";
+    //         os << item;
+    //         first = false;
+    //     }
+    //     os << "]";
+    //     return os;
+    // }
+
+    template<typename T, T(*aggregator)(const std::vector<T>&)>
+    Tensor<T> aggregate(const Tensor<T>& tensor, size_t axis) {
+        Shape result_shape = tensor.shape();
+        result_shape.erase(result_shape.begin() + axis);
+        Tensor<T> result(result_shape);
+        std::vector<Tensor<T>> unstacked = tensor.unstack(axis);
+
+        std::vector<MultiIndex> multi_indexes = indexesRowMajor(result_shape);
+        for (const MultiIndex &multi_index : multi_indexes) {
+            std::vector<T> operands;
+
+            for (size_t i=0; i<unstacked.size(); i++) {
+                operands.push_back(unstacked[i].getEntrySafe(multi_index));
+            }
+            result.getEntryUnsafe(multi_index) = aggregator(operands);
         }
         return result;
     }

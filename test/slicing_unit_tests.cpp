@@ -24,4 +24,16 @@ void slicingUnitTests() {
     for (tensor::Tensor<int> sub_tensor : iota_2x2x3_unstacked2) {
         std::cout << sub_tensor << "\n";
     }
+
+    std::cout << "--------------------------\n";
+    std::cout << tensor::aggregate<int, aggregator::sum<int>>(iota_2x2x3, 0) << "\n";
+
+    std::cout << "--------------------------\n";
+    std::cout << tensor::aggregate<int, aggregator::sum<int>>(iota_2x2x3, 1) << "\n";
+
+    std::cout << "--------------------------\n";
+    std::cout << tensor::aggregate<int, aggregator::sum<int>>(iota_2x2x3, 2) << "\n";
+
+    std::cout << "--------------------------\n";
+    std::cout << tensor::aggregate<int, aggregator::mean<int>>(iota_2x2x3, 2) << "\n";
 }

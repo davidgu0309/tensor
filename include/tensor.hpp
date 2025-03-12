@@ -12,6 +12,7 @@
 
 #include "distribution.hpp"
 #include "util.hpp"
+#include "aggregators.hpp"
 
 #include <cassert>
 #include <iostream>
@@ -20,6 +21,7 @@
 #include <queue>
 #include <vector>
 #include <functional>
+
 
 
 // TO DO: implement .copy()
@@ -101,7 +103,9 @@ namespace tensor {
                     const std::vector<T>& data);        
 
         size_t size() const;
-        Shape shape() const;
+        const Shape& shape() const;
+        Shape& shape();
+
 
         std::vector<T>& data();
 
@@ -157,6 +161,9 @@ namespace tensor {
     std::vector<MultiIndex> indexesRowMajor(const Shape shape);
     MultiIndex concatIndexes(const MultiIndex& i, const MultiIndex& j);
     MultiIndex combineIndexes(const MultiIndex& i, const MultiIndex& j);
+
+    template<typename T, T(*aggregator)(const std::vector<T>&)> 
+    Tensor<T> aggregate(const Tensor<T>& tensor, size_t axis);
 }
 
 #include "../src/tensor.tpp"
