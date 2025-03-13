@@ -80,19 +80,23 @@ namespace tensor{
 
     // TODO: implement slicing and rewrite with dot
     template <typename T>
-    Tensor<T> evaluateDifferential(const Tensor<T>& x, const Tensor<T>& D){
+    Tensor<T> evaluateDifferential(const Tensor<T>& x, const Tensor<T>& D, size_t gradient_dim){
         Shape input_shape = x.shape();
         size_t input_dim = input_shape.size();
         Shape D_shape = D.shape();
-        // TODO: test input_shape is a prefix of D_shape
-        Shape output_shape(D_shape.begin() + input_dim, D_shape.end());
-        Tensor<T> diff = zeros<T>(output_shape);
+        // TODO: check that dimensions that are dot-producted match
+        Shape output_shape(D_shape.begin() + gradient_dim, D_shape.end());
+        Shape result_shape(input_shape.begin(), input_shape.end() - gradient_dim);
+        result_shape.insert(result_shape.end(), output_shape.begin(), output_shape.end());
+        Tensor<T> diff = zeros<T>(result_shape);
         std::vector<MultiIndex> input_indexes = indexesRowMajor(input_shape), output_indexes = indexesRowMajor(output_shape);
         for(const MultiIndex& i : input_indexes){
             const T& x_i = x.getEntrySafe(i);
+            MultiIndex prefix(i.begin(), i.end() - gradient_dim);
             for(const MultiIndex& j : output_indexes){
-                MultiIndex ij = combineIndexes(i, j);
-                diff.getEntrySafe(j) += x_i * D.getEntrySafe(ij);
+                MultiIndex ij = concatIndexes(i, j);
+                MultiIndex pj = concatIndexes(prefix, j);
+                diff.getEntrySafe(pj) += x_i * D.getEntrySafe(ij);
             }
         }
         return diff;

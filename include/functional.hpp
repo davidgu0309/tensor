@@ -107,7 +107,7 @@ namespace tensor {
      * 
      **/
     template <typename T>
-    Tensor<T> evaluateDifferential(const Tensor<T>& x, const Tensor<T>& D);
+    Tensor<T> evaluateDifferential(const Tensor<T>& x, const Tensor<T>& D, size_t gradient_dim);
 
     /**
      *
