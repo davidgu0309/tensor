@@ -95,7 +95,7 @@ namespace tensor{
             MultiIndex suffix(i.end() - gradient_dim, i.end());
             for(const MultiIndex& j : output_indexes){
                 MultiIndex pj = concatIndexes(prefix, j);
-                MultiIndex sj = concatIndexes(i, j);
+                MultiIndex sj = concatIndexes(suffix, j);
                 diff.getEntrySafe(pj) += x_i * D.getEntrySafe(sj);
             }
         }
