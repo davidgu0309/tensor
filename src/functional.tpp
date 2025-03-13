@@ -82,7 +82,6 @@ namespace tensor{
     template <typename T>
     Tensor<T> evaluateDifferential(const Tensor<T>& x, const Tensor<T>& D, size_t gradient_dim){
         Shape input_shape = x.shape();
-        size_t input_dim = input_shape.size();
         Shape D_shape = D.shape();
         // TODO: check that dimensions that are dot-producted match
         Shape output_shape(D_shape.begin() + gradient_dim, D_shape.end());
@@ -93,10 +92,11 @@ namespace tensor{
         for(const MultiIndex& i : input_indexes){
             const T& x_i = x.getEntrySafe(i);
             MultiIndex prefix(i.begin(), i.end() - gradient_dim);
+            MultiIndex suffix(i.end() - gradient_dim, i.end());
             for(const MultiIndex& j : output_indexes){
-                MultiIndex ij = concatIndexes(i, j);
                 MultiIndex pj = concatIndexes(prefix, j);
-                diff.getEntrySafe(pj) += x_i * D.getEntrySafe(ij);
+                MultiIndex sj = concatIndexes(i, j);
+                diff.getEntrySafe(pj) += x_i * D.getEntrySafe(sj);
             }
         }
         return diff;
