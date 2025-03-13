@@ -57,6 +57,11 @@ namespace tensor {
     }
 
     template <typename T>
+    void Tensor<T>::clear(){
+        for(size_t i = 0; i < data_.size(); ++i) data_[i] = 0;
+    }
+
+    template <typename T>
     T& Tensor<T>::getEntryUnsafe(MultiIndex index){
         size_t data_pos = index.size() ? index[0] : 0;
         // shape_ = {2, 2, 3}

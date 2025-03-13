@@ -111,6 +111,8 @@ namespace tensor {
 
         const std::vector<T>& data() const;
 
+        void clear();   /** Zeroes the data. */
+
         T& getEntryUnsafe(MultiIndex index);
         const T& getEntryUnsafe(MultiIndex index) const;
 
